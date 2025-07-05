@@ -1,25 +1,84 @@
 function init() {
 
-    let num1 = 0;
-    let num2 = 0;
-    let operator = '';
-    let result = 0;
+    let expression = '';
+    const display = document.querySelector('.display');
     const calculator = document.querySelector('#calculator');
 
+    let displayingResult = false;
+    function evaluateExpression(expr) {
+        let numbers = []
+        let operations = []
+
+        numbers = expr.split(/[\+\-\*\/]/);
+        operations = [];
+        for (let i = 0; i < expr.length; i++) {
+            if (['+', '-', '*', '/'].includes(expr[i])) {
+                operations.push(expr[i]);
+            }
+        }
+
+        
+        console.log('Numbers:', numbers);
+        console.log('Operations:', operations);
+
+        if (numbers.length === 0) {
+            display.innerText = '0';
+            return;
+        }
+        if (operations.length === 0) {
+            display.innerText = numbers[0];
+            return;
+        }
+
+        let result = numbers[0];
+        for (let i = 0; i < operations.length; i++) {
+            const operation = operations[i];
+            const number = numbers[i + 1];
+
+            if (operation === '+') {
+                result += number;
+            } else if (operation === '-') {
+                result -= number;
+            } else if (operation === '*') {
+                result *= number;
+            } else if (operation === '/') {
+                if (number === 0) {
+                    display.innerText = 'Error';
+                    return;
+                }
+                result /= number;
+            }
+        }
+        display.innerText = result;
+        displayingResult = true;
+    }
     calculator.addEventListener('click', (event) => {
-        // This log is for testing purposes to verify we're getting the correct value
-        // You have to click a button to see this log
-        console.log(event.target.innerText);
+        if (!displayingResult) {
+            if (event.target.classList.contains('button')) {
+                if (!event.target.innerText.includes('=')) {
+                    console.log(event.target.innerText);
+                    expression += event.target.innerText;
+                    display.innerText = expression;
+                }
+                if (event.target.innerText.includes('=')) {
+                    evaluateExpression(expression);
+                }
+                if (event.target.innerText.includes('C')) {
+                    expression = '';
+                    display.innerText = expression;
+                    displayingResult = false;
+                }
+            }
 
-        // Example
-        if (event.target.classList.contains('number')) {
-            
+        }
+        else {
+            if (event.target.classList.contains('button')) {
+                expression = '';
+                display.innerText = expression;
+                displayingResult = false;
+            }
         }
 
-        // Example
-        if (event.target.innerText === '*') {
-            // Do something with this operator
-        }
     });
 }
 document.addEventListener('DOMContentLoaded', init)
