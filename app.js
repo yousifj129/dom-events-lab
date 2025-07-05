@@ -14,7 +14,7 @@ function init() {
         const patternNumbers = new RegExp('[\\+\\-\\*\\/]');
         numbers = expr.split(patternNumbers);
         numbers.forEach((num, index) => {
-            numbers[index] = parseFloat(num);   
+            numbers[index] = Number(num);   
         });
         operations = [];
         for (let i = 0; i < expr.length; i++) {
@@ -49,7 +49,7 @@ function init() {
                 result *= number;
             } else if (operation === '/') {
                 if (number === 0) {
-                    display.innerText = 'Error';
+                    display.innerText = 'No division by zero';
                     return;
                 }
                 result /= number;
