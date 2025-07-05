@@ -5,11 +5,17 @@ function init() {
     const calculator = document.querySelector('#calculator');
 
     let displayingResult = false;
+    const validKeys = ['0', '1', '2', '3', '4', '5', '6', '7', '8', '9', '+', '-', '*', '/', '=', 'C', 'Enter'];
+
     function evaluateExpression(expr) {
         let numbers = []
         let operations = []
 
-        numbers = expr.split(/[\+\-\*\/]/);
+        const patternNumbers = new RegExp('[\\+\\-\\*\\/]');
+        numbers = expr.split(patternNumbers);
+        numbers.forEach((num, index) => {
+            numbers[index] = parseFloat(num);   
+        });
         operations = [];
         for (let i = 0; i < expr.length; i++) {
             if (['+', '-', '*', '/'].includes(expr[i])) {
@@ -17,7 +23,7 @@ function init() {
             }
         }
 
-        
+
         console.log('Numbers:', numbers);
         console.log('Operations:', operations);
 
@@ -78,7 +84,34 @@ function init() {
                 displayingResult = false;
             }
         }
+    });
+    window.addEventListener('keydown', (event) => {
+        if (!displayingResult) {
+            if (validKeys.includes(event.key)) {
+                if (!event.key.includes('=') && !event.key.includes('C') && !event.key.includes('Enter')) {
+                    console.log(event.key);
+                    expression += event.key;
+                    display.innerText = expression;
+                }
+                if (event.key.includes('=') || event.key.includes('Enter')) {
+                    evaluateExpression(expression);
+                }
+                if (event.key.includes('C')) {
+                    expression = '';
+                    display.innerText = expression;
+                    displayingResult = false;
+                }
+            }
 
+
+        }
+        else {
+            if (validKeys.includes(event.key)) {
+                expression = '';
+                display.innerText = expression;
+                displayingResult = false;
+            }
+        }
     });
 }
 document.addEventListener('DOMContentLoaded', init)
